@@ -3,6 +3,9 @@ from myapp.test_data import users
 from flask import request
 import uuid
 
+user_template = {
+    "username" : "str"
+}
 
 @app.post('/user')
 def create_user():
@@ -13,15 +16,19 @@ def create_user():
             "error": "No valid JSON data received"
             }, 400
     
-    if "username" not in user_data:
-        return {
-            "error": "No username in JSON data"
-            }, 400
-
-    if not user_data["username"]:
-        return {
-            "error": "Empty username in JSON data"
-            }, 400
+    for field in user_template:
+        if field not in user_data:
+            return {
+                "error": "No " + field + " in JSON data"
+                }, 400
+        elif type(user_data[field]) != type(user_template[field]):
+            return {
+                "error": "Invalid data type for " + field + " in JSON data"
+                }, 400
+        elif type(user_data[field]) == str and not user_data[field]:
+            return {
+                "error": "Empty " + field + " in JSON data"
+                }, 400
 
     user_id = uuid.uuid4().hex
     user = {"id": user_id, "username": user_data["username"]}

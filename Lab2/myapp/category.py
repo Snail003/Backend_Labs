@@ -3,6 +3,9 @@ from myapp.test_data import categories
 from flask import request
 import uuid
 
+category_template = {
+    "name" : "str"
+}
 
 @app.post('/category')
 def create_category():
@@ -13,15 +16,19 @@ def create_category():
             "error": "No valid JSON data received"
             }, 400
     
-    if "name" not in category_data:
-        return {
-            "error": "No name in JSON data"
-            }, 400
-
-    if not category_data["name"]:
-        return {
-            "error": "Empty name in JSON data"
-            }, 400
+    for field in category_template:
+        if field not in category_data:
+            return {
+                "error": "No " + field + " in JSON data"
+                }, 400
+        elif type(category_data[field]) != type(category_template[field]):
+            return {
+                "error": "Invalid data type for " + field + " in JSON data"
+                }, 400
+        elif type(category_data[field]) == str and not category_data[field]:
+            return {
+                "error": "Empty " + field + " in JSON data"
+                }, 400
 
     category_id = uuid.uuid4().hex
     category = {"id": category_id, "name": category_data["name"]}
@@ -30,7 +37,7 @@ def create_category():
 
 @app.get('/category')
 def get_category():
-    if not request.args:
+    if "id" not in request.args:
         return list(categories.values())
 
     category_id = request.args.get("id")
@@ -41,13 +48,13 @@ def get_category():
     if category_id not in categories:
         return {
             "error": "Category could not be found"
-            }, 404
+            }
     
     return categories[category_id]
 
 @app.delete('/category')
 def delete_category():
-    if not request.args:
+    if "id" not in  request.args:
         return {
             "error": "id argument isn't found"
             }, 404
@@ -56,7 +63,7 @@ def delete_category():
     if category_id not in categories:
         return {
             "error": "Category could not be found"
-            }, 404
+            }
     
     deleted_category = categories[category_id]
     del categories[category_id]

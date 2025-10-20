@@ -12,10 +12,20 @@ users = {
 categories = {
     "test-category" : {
         "id"       : "test-category",
-        "name" : "Test"
+        "name"     : "Test"
     },
     "test-category2" : {
         "id"       : "test-category2",
-        "name" : "Test2"
+        "name"     : "Test2"
     }
+}
+
+records = {
+    "test-record" : {
+        "id"            : "test-record",
+        "user_id"       : "test-user",
+        "category_id"   : "test-category",
+        "creation_time" : "test time",
+        "expenses"      : 500
+    },
 }
