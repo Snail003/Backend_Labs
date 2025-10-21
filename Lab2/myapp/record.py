@@ -83,7 +83,7 @@ def get_sorted_records():
     user_id = request.args.get("user_id")
     category_id = request.args.get("category_id")
 
-    if not user_id and not category_id:
+    if not user_id.strip() and not category_id.strip():
         return list(records.values())
     
     response = []
